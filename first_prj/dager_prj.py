@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-# In[3]:
+# In[2]:
 
 
 data_path = 'Bike-Sharing-Dataset/hour.csv'
@@ -20,19 +20,19 @@ rides = pd.read_csv(data_path)
 rides.head()
 
 
-# In[4]:
+# In[3]:
 
 
 rides.columns
 
 
-# In[5]:
+# In[4]:
 
 
 rides[:24*10].plot(x='dteday', y='cnt')
 
 
-# In[6]:
+# In[5]:
 
 
 dummy_fields = ['season', 'weathersit', 'mnth', 'hr', 'weekday']
@@ -46,13 +46,13 @@ data = rides.drop(fields_to_drop, axis=1)
 data.head()
 
 
-# In[7]:
+# In[6]:
 
 
 data.columns
 
 
-# In[8]:
+# In[7]:
 
 
 quant_features = ['casual', 'registered', 'cnt', 'temp', 'hum', 'windspeed']
@@ -64,7 +64,7 @@ for each in quant_features:
     data.loc[:, each] = (data[each] - mean)/std
 
 
-# In[9]:
+# In[8]:
 
 
 # Save data for approximately the last 21 days 
@@ -79,7 +79,7 @@ features, targets = data.drop(target_fields, axis=1), data[target_fields]
 test_features, test_targets = test_data.drop(target_fields, axis=1), test_data[target_fields]
 
 
-# In[10]:
+# In[9]:
 
 
 # Hold out the last 60 days or so of the remaining data as a validation set
@@ -87,19 +87,19 @@ train_features, train_targets = features[:-60*24], targets[:-60*24]
 val_features, val_targets = features[-60*24:], targets[-60*24:]
 
 
-# In[11]:
+# In[10]:
 
 
 print("train_feature shape: ",train_features.shape)
 
 
-# In[12]:
+# In[11]:
 
 
 print("train_target shape:",train_targets.shape)
 
 
-# In[13]:
+# In[12]:
 
 
 class NeuralNetwork(object):
@@ -148,7 +148,7 @@ class NeuralNetwork(object):
         return final_outputs
 
 
-# In[14]:
+# In[13]:
 
 
 import unittest
@@ -218,16 +218,16 @@ def MSE(y, Y):
     return np.mean((y-Y)**2)
 
 
-# In[25]:
+# In[34]:
 
 
 import sys
 
 ### Set the hyperparameters here ###
-iterations = 1000
-learning_rate = 0.6
-hidden_nodes = 12
-output_nodes = 6
+iterations = 8000
+learning_rate = 0.7
+hidden_nodes = 13
+output_nodes = 1
 N_i = train_features.shape[1]
 print(N_i)
 network = NeuralNetwork(N_i, hidden_nodes, output_nodes, learning_rate)
@@ -245,16 +245,17 @@ for ii in range(iterations):
     sys.stdout.flush()
 
 
-# In[26]:
+# In[35]:
 
 
+plt.ylim([0,1])
 plt.plot(losses['train'], label='Training loss')
 plt.plot(losses['validation'], label='Validation loss')
 plt.legend()
 _ = plt.ylim()
 
 
-# In[27]:
+# In[36]:
 
 
 fig, ax = plt.subplots(figsize=(8,4))
